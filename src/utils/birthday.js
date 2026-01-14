@@ -44,6 +44,31 @@ export function getNextBirthday(config, currentTimestamp) {
 }
 
 /**
+ * 计算上一个生日的公历日期 (返回东八区时间)
+ */
+export function getLastBirthday(config, currentTimestamp) {
+  const { type, month, day } = config;
+  const nowZoned = getZonedDate(currentTimestamp);
+  const currentYear = nowZoned.getFullYear();
+
+  let targetDate;
+
+  if (type === 'solar') {
+    targetDate = createSolarDate(currentYear, month, day);
+    if (!isBefore(targetDate, nowZoned)) {
+      targetDate = createSolarDate(currentYear - 1, month, day);
+    }
+  } else {
+    targetDate = getSolarFromLunar(currentYear, month, day);
+    if (!isBefore(targetDate, nowZoned)) {
+      targetDate = getSolarFromLunar(currentYear - 1, month, day);
+    }
+  }
+
+  return targetDate;
+}
+
+/**
  * 创建公历日期，处理2月29日 (基于东八区)
  */
 function createSolarDate(year, month, day) {

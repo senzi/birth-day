@@ -2,10 +2,12 @@
 import { ref, onMounted, computed, onUnmounted, watch } from 'vue';
 import { useTimeSync } from './utils/time';
 import { useConfig } from './hooks/useConfig';
-import { getNextBirthday, getBirthdayStats, getZonedDate } from './utils/birthday';
+import { getNextBirthday, getLastBirthday, getBirthdayStats, getZonedDate } from './utils/birthday';
 import { 
-  differenceInSeconds, 
-  isSameDay, 
+  differenceInSeconds,
+  differenceInDays,
+  isSameDay,
+  format,
 } from 'date-fns';
 import { Lunar } from 'lunar-javascript';
 import confetti from 'canvas-confetti';
@@ -81,6 +83,11 @@ onUnmounted(() => {
 const targetBirthday = computed(() => {
   if (!config.value.month || !config.value.day) return null;
   return getNextBirthday(config.value, currentTime.value);
+});
+
+const lastBirthday = computed(() => {
+  if (!config.value.month || !config.value.day) return null;
+  return getLastBirthday(config.value, currentTime.value);
 });
 
 const diffSeconds = computed(() => {
@@ -209,10 +216,16 @@ const countdownText = computed(() => {
   return `${days}天 ${String(hours).padStart(2, '0')}时 ${String(minutes).padStart(2, '0')}分 ${String(seconds).padStart(2, '0')}秒`;
 });
 
+const passedDays = computed(() => {
+  if (!lastBirthday.value) return 0;
+  return differenceInDays(getZonedDate(currentTime.value), lastBirthday.value);
+});
+
 const extraInfo = computed(() => {
   const nowZoned = getZonedDate(currentTime.value);
   const lunar = Lunar.fromDate(nowZoned);
   return {
+    date: format(nowZoned, 'yyyy年MM月dd日'),
     weekday: ['日', '一', '二', '三', '四', '五', '六'][nowZoned.getDay()],
     lunar: `农历 ${lunar.getMonthInChinese()}月${lunar.getDayInChinese()}`
   };
@@ -247,6 +260,11 @@ const saveConfig = (newConfig) => { config.value = newConfig; };
 
 <template>
   <div class="container">
+    <header class="page-header">
+      <div class="current-date">{{ extraInfo.date }} 星期{{ extraInfo.weekday }}</div>
+      <div class="current-lunar">{{ extraInfo.lunar }}</div>
+    </header>
+
     <button class="settings-btn" @click="showConfig = true">⚙️</button>
     
     <main v-if="status === 'empty'">
@@ -286,6 +304,9 @@ const saveConfig = (newConfig) => { config.value = newConfig; };
         <div class="label">距离下一个生日还有</div>
         <div class="timer tabular-nums">{{ countdownText }}</div>
       </div>
+      <div class="passed-info" v-if="status === 'normal'">
+        距上个生日已过 <span class="highlight-small">{{ passedDays }}</span> 天
+      </div>
       <div class="info-footer">
         <span>星期{{ extraInfo.weekday }}</span>
         <span class="divider">|</span>
@@ -301,7 +322,7 @@ const saveConfig = (newConfig) => { config.value = newConfig; };
     <footer class="page-footer">
       <a href="https://github.com/senzi/birth-day" target="_blank" rel="noopener noreferrer">GitHub</a>
       <span class="footer-divider">|</span>
-      <span>MIT vibecoding</span>
+      <span>MIT · Vibecoding</span>
     </footer>
 
     <ConfigModal :show="showConfig" :config="config" @close="showConfig = false" @save="saveConfig" />
@@ -312,11 +333,14 @@ const saveConfig = (newConfig) => { config.value = newConfig; };
 </template>
 
 <style scoped>
-.container { min-height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; }
-.settings-btn { position: fixed; top: 20px; right: 20px; font-size: 1.5rem; background: none; border: none; padding: 10px; }
-.user-greeting { font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.8; }
+.container { min-height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; padding-top: 60px; }
+.page-header { position: absolute; top: 20px; left: 20px; text-align: left; color: #666; font-size: 0.9rem; line-height: 1.4; }
+.current-date { font-weight: 500; }
+.current-lunar { opacity: 0.8; }
+.settings-btn { position: fixed; top: 20px; right: 20px; font-size: 1.5rem; background: none; border: none; padding: 10px; z-index: 10; }
+.user-greeting { font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90vw; }
 .countdown-container .label { font-size: 1rem; margin-bottom: 1rem; color: #666; }
-.timer { font-size: 3.5rem; font-weight: bold; color: #2c3e50; text-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+.timer { font-size: 3.5rem; font-weight: bold; color: #2c3e50; text-shadow: 0 2px 10px rgba(0,0,0,0.05); white-space: nowrap; }
 .info-footer { margin-top: 2rem; font-size: 0.9rem; color: #888; }
 .divider { margin: 0 10px; }
 .birthday-card { max-width: 500px; padding: 2rem; }
@@ -328,6 +352,7 @@ const saveConfig = (newConfig) => { config.value = newConfig; };
 .short-wish { font-style: italic; color: #666; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 1rem; text-align: center; }
 .highlight { font-weight: bold; color: #ff6b81; font-size: 1.4rem; }
 .highlight-small { font-weight: bold; color: #ff6b81; }
+.passed-info { margin-top: 1rem; font-size: 0.9rem; color: #888; }
 .actions-footer { margin-top: 4rem; }
 .page-footer { margin-top: 2rem; font-size: 0.8rem; color: #aaa; display: flex; align-items: center; gap: 10px; }
 .page-footer a { color: #aaa; text-decoration: none; transition: color 0.3s; }
@@ -336,5 +361,9 @@ const saveConfig = (newConfig) => { config.value = newConfig; };
 .toast { position: fixed; bottom: 50px; background: rgba(0,0,0,0.7); color: white; padding: 10px 20px; border-radius: 20px; font-size: 0.9rem; }
 .fade-enter-active, .fade-leave-active { transition: opacity 0.5s; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
-@media (max-width: 600px) { .timer { font-size: 2rem; } .birthday-card h1 { font-size: 1.8rem; } }
+@media (max-width: 600px) { 
+  .timer { font-size: 8vw; } 
+  .user-greeting { font-size: 1rem; }
+  .birthday-card h1 { font-size: 1.8rem; } 
+}
 </style>
