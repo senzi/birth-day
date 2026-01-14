@@ -7,11 +7,10 @@ export async function onRequest(context) {
   const deepseekApiBaseUrl = context.env.DEEPSEEK_API_BASE_URL || 'https://api.deepseek.com';
 
   const allowedOrigins = [
-    'https://wish.closeai.moe',
-    'https://deepluck.closeai.moe',
+    'https://birthday.closeai.moe',
     'http://127.0.0.1:8788',
     'http://localhost:8788',
-    'http://localhost:5173' // 增加本地开发端口
+    'http://localhost:5173'
   ];
 
   let isAllowedOrigin = false;

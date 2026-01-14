@@ -298,6 +298,12 @@ const saveConfig = (newConfig) => { config.value = newConfig; };
       <button @click="share">分享配置</button>
     </div>
 
+    <footer class="page-footer">
+      <a href="https://github.com/senzi/birth-day" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <span class="footer-divider">|</span>
+      <span>MIT vibecoding</span>
+    </footer>
+
     <ConfigModal :show="showConfig" :config="config" @close="showConfig = false" @save="saveConfig" />
     <Transition name="fade">
       <div v-if="toastMsg" class="toast">{{ toastMsg }}</div>
@@ -323,6 +329,10 @@ const saveConfig = (newConfig) => { config.value = newConfig; };
 .highlight { font-weight: bold; color: #ff6b81; font-size: 1.4rem; }
 .highlight-small { font-weight: bold; color: #ff6b81; }
 .actions-footer { margin-top: 4rem; }
+.page-footer { margin-top: 2rem; font-size: 0.8rem; color: #aaa; display: flex; align-items: center; gap: 10px; }
+.page-footer a { color: #aaa; text-decoration: none; transition: color 0.3s; }
+.page-footer a:hover { color: #888; }
+.footer-divider { opacity: 0.3; }
 .toast { position: fixed; bottom: 50px; background: rgba(0,0,0,0.7); color: white; padding: 10px 20px; border-radius: 20px; font-size: 0.9rem; }
 .fade-enter-active, .fade-leave-active { transition: opacity 0.5s; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }

@@ -1,5 +1,69 @@
-# Vue 3 + Vite
+# 生日快乐 (Project Birthday) 🎂
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+一个清爽、简洁、充满仪式感的生日倒计时与祝福工具。
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+## ✨ 特性
+
+- **精准倒计时**：支持公历与农历生日，自动计算下一个生日日期。
+- **双重授时**：结合服务器时间与本地时间，确保倒计时精确无误。
+- **仪式感设计**：
+  - 生日当天自动触发全屏纸屑特效。
+  - 根据时间差自动切换界面状态（期待感、紧迫感、留恋感）。
+- **个性化配置**：支持自定义称呼、生日类型及日期。
+- **便捷分享**：一键生成包含配置信息的分享链接，自动复制到剪贴板。
+- **响应式设计**：适配各种屏幕尺寸，采用温柔的浅粉与浅蓝渐变色调。
+
+## 🛠️ 技术栈
+
+- **框架**：Vue 3 (Composition API)
+- **构建工具**：Bun + Vite
+- **日期处理**：`date-fns` (公历) + `lunar-javascript` (农历)
+- **特效**：`canvas-confetti`
+- **部署/后端**：Cloudflare Pages + Functions (Wrangler)
+
+## 🚀 快速开始
+
+### 安装依赖
+
+```bash
+bun install
+```
+
+### 本地开发
+
+```bash
+bun run dev
+```
+
+### 构建项目
+
+```bash
+bun run build
+```
+
+## 📖 功能说明
+
+### 界面状态机
+
+系统会根据当前时间与目标生日的差值展示不同的内容：
+
+- **生日当天**：展示温馨的生日祝福模板。
+- **倒计时 (24小时内)**：显示紧迫的 `时 : 分 : 秒` 倒计时。
+- **倒计时 (24小时以上)**：显示期待的 `天 : 时 : 分 : 秒` 倒计时。
+- **刚刚过去 (24小时内)**：显示留恋感文案。
+- **平时状态**：显示距上个生日已过天数或距下个生日剩余天数。
+
+### 数据优先级
+
+应用按以下顺序加载配置：
+1. **URL 参数**：通过分享链接进入时优先加载。
+2. **LocalStorage**：读取用户之前保存的本地配置。
+3. **默认状态**：若无配置则进入初始引导状态。
+
+## 📄 开源协议
+
+[MIT License](LICENSE)
+
+---
+
+[GitHub](https://github.com/senzi/birth-day) | MIT vibecoding
