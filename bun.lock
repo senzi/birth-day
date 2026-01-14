@@ -5,6 +5,10 @@
     "": {
       "name": "birth-day",
       "dependencies": {
+        "canvas-confetti": "^1.9.4",
+        "date-fns": "^4.1.0",
+        "date-fns-tz": "^3.2.0",
+        "lunar-javascript": "^1.7.7",
         "vue": "^3.5.24",
       },
       "devDependencies": {
@@ -150,7 +154,13 @@
 
     "@vue/shared": ["@vue/shared@3.5.26", "https://registry.npmmirror.com/@vue/shared/-/shared-3.5.26.tgz", {}, "sha512-7Z6/y3uFI5PRoKeorTOSXKcDj0MSasfNNltcslbFrPpcw6aXRUALq4IfJlaTRspiWIUOEZbrpM+iQGmCOiWe4A=="],
 
+    "canvas-confetti": ["canvas-confetti@1.9.4", "https://registry.npmmirror.com/canvas-confetti/-/canvas-confetti-1.9.4.tgz", {}, "sha512-yxQbJkAVrFXWNbTUjPqjF7G+g6pDotOUHGbkZq2NELZUMDpiJ85rIEazVb8GTaAptNW2miJAXbs1BtioA251Pw=="],
+
     "csstype": ["csstype@3.2.3", "https://registry.npmmirror.com/csstype/-/csstype-3.2.3.tgz", {}, "sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ=="],
+
+    "date-fns": ["date-fns@4.1.0", "https://registry.npmmirror.com/date-fns/-/date-fns-4.1.0.tgz", {}, "sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg=="],
+
+    "date-fns-tz": ["date-fns-tz@3.2.0", "https://registry.npmmirror.com/date-fns-tz/-/date-fns-tz-3.2.0.tgz", { "peerDependencies": { "date-fns": "^3.0.0 || ^4.0.0" } }, "sha512-sg8HqoTEulcbbbVXeg84u5UnlsQa8GS5QXMqjjYIhS4abEVVKIUwe0/l/UhrZdKaL/W5eWZNlbTeEIiOXTcsBQ=="],
 
     "entities": ["entities@7.0.0", "https://registry.npmmirror.com/entities/-/entities-7.0.0.tgz", {}, "sha512-FDWG5cmEYf2Z00IkYRhbFrwIwvdFKH07uV8dvNy0omp/Qb1xcyCWp2UDtcwJF4QZZvk0sLudP6/hAu42TaqVhQ=="],
 
@@ -161,6 +171,8 @@
     "fdir": ["fdir@6.5.0", "https://registry.npmmirror.com/fdir/-/fdir-6.5.0.tgz", { "peerDependencies": { "picomatch": "^3 || ^4" }, "optionalPeers": ["picomatch"] }, "sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg=="],
 
     "fsevents": ["fsevents@2.3.3", "https://registry.npmmirror.com/fsevents/-/fsevents-2.3.3.tgz", { "os": "darwin" }, "sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw=="],
+
+    "lunar-javascript": ["lunar-javascript@1.7.7", "https://registry.npmmirror.com/lunar-javascript/-/lunar-javascript-1.7.7.tgz", {}, "sha512-u/KYiwPIBo/0bT+WWfU7qO1d+aqeB90Tuy4ErXenr2Gam0QcWeezUvtiOIyXR7HbVnW2I1DKfU0NBvzMZhbVQw=="],
 
     "magic-string": ["magic-string@0.30.21", "https://registry.npmmirror.com/magic-string/-/magic-string-0.30.21.tgz", { "dependencies": { "@jridgewell/sourcemap-codec": "^1.5.5" } }, "sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ=="],
 
