@@ -107,7 +107,7 @@ const checkAndFetchWish = async () => {
   const isBirthdayNow = status.value === 'birthday';
 
   if (isNearBirthday || (isBirthdayNow && !aiWish.value)) {
-    const cacheKey = `wish_${config.value.name}_${config.value.year}_${config.value.month}_${config.value.day}`;
+    const cacheKey = `wish_${config.value.name}_${config.value.celebrateType || config.value.type}_${config.value.inputType || config.value.type}_${config.value.year}_${config.value.month}_${config.value.day}`;
     const cached = localStorage.getItem(cacheKey);
     
     if (cached) {
@@ -127,7 +127,8 @@ const fetchAIWish = async (cacheKey) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name: config.value.name,
-        type: config.value.type,
+        type: config.value.celebrateType || config.value.type,
+        inputType: config.value.inputType || config.value.type,
         date: `${config.value.month}-${config.value.day}`,
         hasYear: !!config.value.year,
         year: config.value.year,
@@ -181,15 +182,10 @@ watch(config, () => {
 
 const status = computed(() => {
   if (!config.value.name) return 'empty';
+  if (!targetBirthday.value) return 'empty';
   const nowZoned = getZonedDate(currentTime.value);
   
-  let isBirthdayToday = false;
-  if (config.value.type === 'solar') {
-    isBirthdayToday = nowZoned.getMonth() + 1 === config.value.month && nowZoned.getDate() === config.value.day;
-  } else {
-    const lunarNow = Lunar.fromDate(nowZoned);
-    isBirthdayToday = lunarNow.getMonth() === config.value.month && lunarNow.getDay() === config.value.day;
-  }
+  const isBirthdayToday = isSameDay(nowZoned, targetBirthday.value);
 
   if (isBirthdayToday) {
     triggerConfetti();

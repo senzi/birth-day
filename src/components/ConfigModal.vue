@@ -8,39 +8,50 @@
       </div>
       
       <div class="form-group">
-        <label>生日类型</label>
+        <label>过生日方式</label>
         <div class="radio-group">
-          <label><input type="radio" v-model="localConfig.type" value="solar" /> 公历</label>
-          <label><input type="radio" v-model="localConfig.type" value="lunar" /> 农历</label>
+          <label><input type="radio" v-model="localConfig.celebrateType" value="solar" /> 新历</label>
+          <label><input type="radio" v-model="localConfig.celebrateType" value="lunar" /> 农历</label>
         </div>
       </div>
 
       <div class="form-group">
-        <label>出生年份 (选填)</label>
+        <label>生日填写类型</label>
+        <div class="radio-group">
+          <label><input type="radio" v-model="localConfig.inputType" value="solar" /> 新历</label>
+          <label><input type="radio" v-model="localConfig.inputType" value="lunar" /> 农历</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>出生年份 ({{ isYearRequired ? '必填' : '选填' }})</label>
         <input type="number" v-model.number="localConfig.year" placeholder="如 1995" />
+        <div v-if="isYearRequired && !localConfig.year" class="hint">
+          过农历生日但填写新历生日时，需要出生年份用于换算。
+        </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
-          <label>{{ localConfig.type === 'lunar' ? '农历月份' : '月' }}</label>
+          <label>{{ localConfig.inputType === 'lunar' ? '农历月份' : '月' }}</label>
           <select v-model.number="localConfig.month">
             <option v-for="m in 12" :key="m" :value="m">
-              {{ localConfig.type === 'lunar' ? LUNAR_MONTHS[m-1] : m + '月' }}
+              {{ localConfig.inputType === 'lunar' ? LUNAR_MONTHS[m-1] : m + '月' }}
             </option>
           </select>
         </div>
         <div class="form-group">
-          <label>{{ localConfig.type === 'lunar' ? '农历日期' : '日' }}</label>
+          <label>{{ localConfig.inputType === 'lunar' ? '农历日期' : '日' }}</label>
           <select v-model.number="localConfig.day">
-            <option v-for="d in (localConfig.type === 'lunar' ? 30 : 31)" :key="d" :value="d">
-              {{ localConfig.type === 'lunar' ? LUNAR_DAYS[d-1] : d + '日' }}
+            <option v-for="d in (localConfig.inputType === 'lunar' ? 30 : 31)" :key="d" :value="d">
+              {{ localConfig.inputType === 'lunar' ? LUNAR_DAYS[d-1] : d + '日' }}
             </option>
           </select>
         </div>
       </div>
 
       <div class="actions">
-        <button @click="save">保存</button>
+        <button :disabled="isYearRequired && !localConfig.year" @click="save">保存</button>
         <button @click="$emit('close')">取消</button>
       </div>
     </div>
@@ -48,7 +59,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 
 const LUNAR_MONTHS = ['正月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '冬月', '腊月'];
 const LUNAR_DAYS = [
@@ -64,13 +75,26 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'save']);
 
-const localConfig = ref({ ...props.config });
+const localConfig = ref({
+  celebrateType: 'solar',
+  inputType: 'solar',
+  ...props.config
+});
 
 watch(() => props.config, (newVal) => {
-  localConfig.value = { ...newVal };
+  localConfig.value = {
+    celebrateType: 'solar',
+    inputType: 'solar',
+    ...newVal
+  };
 }, { deep: true });
 
+const isYearRequired = computed(() => {
+  return localConfig.value.celebrateType === 'lunar' && localConfig.value.inputType === 'solar';
+});
+
 const save = () => {
+  if (isYearRequired.value && !localConfig.value.year) return;
   emit('save', { ...localConfig.value });
   emit('close');
 };
@@ -112,5 +136,14 @@ input, select {
 }
 .actions button {
   flex: 1;
+}
+.actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.hint {
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+  color: #c06c5a;
 }
 </style>

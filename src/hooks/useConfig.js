@@ -5,7 +5,8 @@ const STORAGE_KEY = 'birthday_config';
 export function useConfig() {
   const config = ref({
     name: '',
-    type: 'solar', // 'solar' | 'lunar'
+    celebrateType: 'solar', // 'solar' | 'lunar'
+    inputType: 'solar', // 'solar' | 'lunar'
     year: null,
     month: 1,
     day: 1
@@ -23,6 +24,12 @@ export function useConfig() {
         }).join(''));
         const decoded = JSON.parse(decodedStr);
         config.value = { ...config.value, ...decoded };
+        if (!config.value.celebrateType && config.value.type) {
+          config.value.celebrateType = config.value.type;
+        }
+        if (!config.value.inputType && config.value.type) {
+          config.value.inputType = config.value.type;
+        }
         saveToLocal(config.value); // 同步到本地
         return;
       } catch (e) {
@@ -34,7 +41,14 @@ export function useConfig() {
     const localData = localStorage.getItem(STORAGE_KEY);
     if (localData) {
       try {
-        config.value = JSON.parse(localData);
+        const parsed = JSON.parse(localData);
+        config.value = { ...config.value, ...parsed };
+        if (!config.value.celebrateType && config.value.type) {
+          config.value.celebrateType = config.value.type;
+        }
+        if (!config.value.inputType && config.value.type) {
+          config.value.inputType = config.value.type;
+        }
       } catch (e) {
         console.error('Failed to parse local config', e);
       }
